@@ -1,0 +1,139 @@
+﻿@model ClinicaVeterinaria.Models.Cita
+
+@{
+    ViewData["Title"] = "Editar Cita";
+}
+
+<div class="container mt-4">
+
+    <h1>Editar Cita</h1>
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <form asp-action="Edit"
+                  method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <input type="hidden"
+                       asp-for="Id" />
+
+                <div class="mb-3">
+
+                    <label asp-for="MascotaId"
+                           class="form-label">
+                        Mascota
+                    </label>
+
+                    <select asp-for="MascotaId"
+                            class="form-select"
+                            asp-items="ViewBag.MascotaId">
+
+                        <option value="">
+                            -- Seleccione una mascota --
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="MascotaId"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="ServicioVeterinarioId"
+                           class="form-label">
+                        Servicio Veterinario
+                    </label>
+
+                    <select asp-for="ServicioVeterinarioId"
+                            class="form-select"
+                            asp-items="ViewBag.ServicioVeterinarioId">
+
+                        <option value="">
+                            -- Seleccione un servicio --
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="ServicioVeterinarioId"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="FechaCita"
+                           class="form-label">
+                    </label>
+
+                    <input asp-for="FechaCita"
+                           class="form-control"
+                           type="date" />
+
+                    <span asp-validation-for="FechaCita"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Estado"
+                           class="form-label">
+                        Estado
+                    </label>
+
+                    <select asp-for="Estado"
+                            class="form-select">
+
+                        <option value="Pendiente">
+                            Pendiente
+                        </option>
+
+                        <option value="Atendida">
+                            Atendida
+                        </option>
+
+                        <option value="Cancelada">
+                            Cancelada
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="Estado"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    Guardar Cambios
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Volver
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

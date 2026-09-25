@@ -8,20 +8,21 @@
 
     <h1>Editar Servicio Veterinario</h1>
 
-    <hr />
-
     <div class="row">
+
         <div class="col-md-6">
 
             <form asp-action="Edit" method="post">
 
-                <input type="hidden" asp-for="Id" />
-
                 <div asp-validation-summary="ModelOnly"
-                     class="text-danger">
+                     class="text-danger mb-3">
                 </div>
 
+                <input type="hidden"
+                       asp-for="Id" />
+
                 <div class="mb-3">
+
                     <label asp-for="Nombre"
                            class="form-label">
                     </label>
@@ -32,23 +33,28 @@
                     <span asp-validation-for="Nombre"
                           class="text-danger">
                     </span>
+
                 </div>
 
                 <div class="mb-3">
+
                     <label asp-for="Descripcion"
                            class="form-label">
                     </label>
 
                     <textarea asp-for="Descripcion"
                               class="form-control"
-                              rows="4"></textarea>
+                              rows="4">
+                    </textarea>
 
                     <span asp-validation-for="Descripcion"
                           class="text-danger">
                     </span>
+
                 </div>
 
                 <div class="mb-3">
+
                     <label asp-for="Precio"
                            class="form-label">
                     </label>
@@ -62,23 +68,24 @@
                     <span asp-validation-for="Precio"
                           class="text-danger">
                     </span>
+
                 </div>
 
                 <button type="submit"
                         class="btn btn-primary">
-                    Guardar cambios
+                    Guardar Cambios
                 </button>
 
                 <a asp-action="Index"
                    class="btn btn-secondary">
-                    Cancelar
+                    Volver
                 </a>
 
             </form>
 
         </div>
-    </div>
 
+    </div>
 </div>
 
 @section Scripts {

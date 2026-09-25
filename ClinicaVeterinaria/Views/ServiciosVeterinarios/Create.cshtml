@@ -1,52 +1,59 @@
 ﻿@model ClinicaVeterinaria.Models.ServicioVeterinario
 
 @{
-    ViewData["Title"] = "Crear Servicio";
+    ViewData["Title"] = "Nuevo Servicio";
 }
 
 <div class="container mt-4">
 
-    <h1>Crear Servicio Veterinario</h1>
-
-    <hr />
+    <h1>Nuevo Servicio Veterinario</h1>
 
     <div class="row">
+
         <div class="col-md-6">
 
             <form asp-action="Create" method="post">
 
                 <div asp-validation-summary="ModelOnly"
-                     class="text-danger">
+                     class="text-danger mb-3">
                 </div>
 
                 <div class="mb-3">
+
                     <label asp-for="Nombre"
                            class="form-label">
                     </label>
 
                     <input asp-for="Nombre"
-                           class="form-control" />
+                           class="form-control"
+                           placeholder="Nombre del servicio" />
 
                     <span asp-validation-for="Nombre"
                           class="text-danger">
                     </span>
+
                 </div>
 
                 <div class="mb-3">
+
                     <label asp-for="Descripcion"
                            class="form-label">
                     </label>
 
                     <textarea asp-for="Descripcion"
                               class="form-control"
-                              rows="4"></textarea>
+                              rows="4"
+                              placeholder="Descripción del servicio">
+                    </textarea>
 
                     <span asp-validation-for="Descripcion"
                           class="text-danger">
                     </span>
+
                 </div>
 
                 <div class="mb-3">
+
                     <label asp-for="Precio"
                            class="form-label">
                     </label>
@@ -60,6 +67,7 @@
                     <span asp-validation-for="Precio"
                           class="text-danger">
                     </span>
+
                 </div>
 
                 <button type="submit"
@@ -75,8 +83,8 @@
             </form>
 
         </div>
-    </div>
 
+    </div>
 </div>
 
 @section Scripts {

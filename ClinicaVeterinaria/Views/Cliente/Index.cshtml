@@ -1,95 +1,443 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Panel de Cliente";
 }
 
-<div class="container mt-4">
+<div class="container py-5">
 
-    <div class="row mb-4">
-        <div class="col">
+    <!-- BIENVENIDA -->
 
-            <h1 class="display-5">
-                Panel de Cliente
+    <div class="client-welcome mb-5">
+
+        <div>
+
+            <span class="welcome-label">
+                ÁREA DEL CLIENTE
+            </span>
+
+            <h1>
+                ¡Bienvenido a VetCare! 🐾
             </h1>
 
-            <p class="text-muted">
-                Bienvenido a la Clínica Veterinaria.
+            <p>
+                Administra tus mascotas, consulta nuestros servicios
+                y solicita tus citas veterinarias.
             </p>
 
         </div>
+
+        <div class="welcome-icon">
+
+            <i class="bi bi-heart-pulse-fill"></i>
+
+        </div>
+
     </div>
+
+
+    <!-- OPCIONES -->
 
     <div class="row g-4">
 
-        <!-- Servicios -->
+        <!-- SERVICIOS -->
+
         <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body text-center">
 
-                    <h5 class="card-title">
-                        Servicios Veterinarios
-                    </h5>
+            <div class="client-card h-100">
 
-                    <p class="card-text">
-                        Consulta los servicios disponibles
-                        en nuestra clínica.
-                    </p>
+                <div class="client-card-icon services">
 
-                    <a asp-controller="ServiciosVeterinarios"
-                       asp-action="Index"
-                       class="btn btn-primary">
-                        Ver servicios
-                    </a>
+                    <i class="bi bi-heart-pulse-fill"></i>
 
                 </div>
+
+                <h4>
+                    Servicios Veterinarios
+                </h4>
+
+                <p>
+                    Consulta los servicios disponibles
+                    para el cuidado de tus mascotas.
+                </p>
+
+                <a asp-controller="ServiciosVeterinarios"
+                   asp-action="Index"
+                   class="btn btn-outline-success">
+
+                    <i class="bi bi-arrow-right-circle me-1"></i>
+                    Ver servicios
+
+                </a>
+
             </div>
+
         </div>
 
-        <!-- Mascotas -->
+
+        <!-- MASCOTAS -->
+
         <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body text-center">
 
-                    <h5 class="card-title">
-                        Mis Mascotas
-                    </h5>
+            <div class="client-card h-100">
 
-                    <p class="card-text">
-                        Registra y consulta tus mascotas.
-                    </p>
+                <div class="client-card-icon pets">
 
-                    <a asp-controller="Mascotas"
-                       asp-action="Index"
-                       class="btn btn-success">
-                        Mis mascotas
-                    </a>
+                    <i class="bi bi-paw-fill"></i>
 
                 </div>
+
+                <h4>
+                    Mis Mascotas
+                </h4>
+
+                <p>
+                    Registra y administra la información
+                    de tus mascotas.
+                </p>
+
+                <a asp-controller="Mascotas"
+                   asp-action="Index"
+                   class="btn btn-outline-success">
+
+                    <i class="bi bi-arrow-right-circle me-1"></i>
+                    Ver mascotas
+
+                </a>
+
             </div>
+
         </div>
 
-        <!-- Citas -->
+
+        <!-- CITAS -->
+
         <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body text-center">
 
-                    <h5 class="card-title">
-                        Mis Citas
-                    </h5>
+            <div class="client-card h-100">
 
-                    <p class="card-text">
-                        Solicita y consulta tus citas médicas.
-                    </p>
+                <div class="client-card-icon appointments">
 
-                    <a asp-controller="Citas"
-                       asp-action="Index"
-                       class="btn btn-info text-white">
-                        Mis citas
-                    </a>
+                    <i class="bi bi-calendar-heart-fill"></i>
 
                 </div>
+
+                <h4>
+                    Mis Citas
+                </h4>
+
+                <p>
+                    Solicita nuevas citas y consulta
+                    el estado de tus atenciones.
+                </p>
+
+                <a asp-controller="Citas"
+                   asp-action="Index"
+                   class="btn btn-outline-success">
+
+                    <i class="bi bi-arrow-right-circle me-1"></i>
+                    Ver mis citas
+
+                </a>
+
             </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- INFORMACIÓN -->
+
+    <div class="client-info mt-5">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-8">
+
+                <span class="welcome-label">
+                    CUIDADO Y BIENESTAR
+                </span>
+
+                <h3>
+                    Todo lo que necesitas para cuidar a tu mascota
+                </h3>
+
+                <p class="mb-0">
+                    Desde este panel puedes administrar tus mascotas,
+                    solicitar atención veterinaria y consultar
+                    tus citas de manera sencilla.
+                </p>
+
+            </div>
+
+            <div class="col-md-4 text-center mt-4 mt-md-0">
+
+                <i class="bi bi-shield-check info-icon"></i>
+
+            </div>
+
         </div>
 
     </div>
 
 </div>
+
+
+<style>
+
+    /* BIENVENIDA */
+
+    .client-welcome {
+
+        background:
+            linear-gradient(
+                135deg,
+                #087f5b,
+                #20c997
+            );
+
+        border-radius: 28px;
+
+        padding: 40px;
+
+        color: white;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        box-shadow:
+            0 15px 35px
+            rgba(8, 127, 91, .20);
+
+    }
+
+
+    .welcome-label {
+
+        font-size: .75rem;
+
+        font-weight: 800;
+
+        letter-spacing: 2px;
+
+        opacity: .85;
+
+    }
+
+
+    .client-welcome h1 {
+
+        font-weight: 800;
+
+        margin-top: 10px;
+
+        margin-bottom: 10px;
+
+    }
+
+
+    .client-welcome p {
+
+        margin-bottom: 0;
+
+        max-width: 650px;
+
+        opacity: .9;
+
+    }
+
+
+    .welcome-icon {
+
+        width: 100px;
+
+        height: 100px;
+
+        border-radius: 30px;
+
+        background: rgba(255,255,255,.15);
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 3.2rem;
+
+    }
+
+
+    /* TARJETAS */
+
+    .client-card {
+
+        background: white;
+
+        border: 1px solid #edf4f1;
+
+        border-radius: 22px;
+
+        padding: 30px;
+
+        box-shadow:
+            0 7px 25px
+            rgba(23, 76, 60, .08);
+
+        transition:
+            transform .25s,
+            box-shadow .25s;
+
+    }
+
+
+    .client-card:hover {
+
+        transform: translateY(-7px);
+
+        box-shadow:
+            0 15px 35px
+            rgba(23, 76, 60, .14);
+
+    }
+
+
+    .client-card-icon {
+
+        width: 65px;
+
+        height: 65px;
+
+        border-radius: 18px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 1.7rem;
+
+        margin-bottom: 22px;
+
+    }
+
+
+    .client-card-icon.services {
+
+        background: #dff7ee;
+
+        color: #087f5b;
+
+    }
+
+
+    .client-card-icon.pets {
+
+        background: #e5f4ff;
+
+        color: #1683c5;
+
+    }
+
+
+    .client-card-icon.appointments {
+
+        background: #fff3cd;
+
+        color: #a67c00;
+
+    }
+
+
+    .client-card h4 {
+
+        color: #174c3c;
+
+        font-weight: 800;
+
+        margin-bottom: 12px;
+
+    }
+
+
+    .client-card p {
+
+        color: #6c757d;
+
+        line-height: 1.6;
+
+        min-height: 75px;
+
+    }
+
+
+    /* INFORMACIÓN */
+
+    .client-info {
+
+        background: #f3fbf8;
+
+        border-radius: 25px;
+
+        padding: 35px;
+
+        border: 1px solid #dff1e9;
+
+    }
+
+
+    .client-info h3 {
+
+        color: #174c3c;
+
+        font-weight: 800;
+
+        margin-top: 8px;
+
+        margin-bottom: 12px;
+
+    }
+
+
+    .client-info p {
+
+        color: #6c757d;
+
+        line-height: 1.7;
+
+    }
+
+
+    .info-icon {
+
+        font-size: 5rem;
+
+        color: #19a974;
+
+    }
+
+
+    @@media (max-width: 767px) {
+
+        .client-welcome {
+
+            padding: 30px;
+
+            text-align: center;
+
+        }
+
+        .welcome-icon {
+
+            display: none;
+
+        }
+
+    }
+
+</style>
+

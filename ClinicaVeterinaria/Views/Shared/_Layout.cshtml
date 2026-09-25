@@ -1,262 +1,451 @@
-﻿<!DOCTYPE html>
-<html lang="es">
+﻿
+@using Microsoft.AspNetCore.Identity
+@using ClinicaVeterinaria.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>@ViewData["Title"] - Clínica Veterinaria</title>
+    <title>@ViewData["Title"] - VetCare</title>
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ClinicaVeterinaria.styles.css" asp-append-version="true" />
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+
+        :root {
+            --vet-green: #19a974;
+            --vet-green-dark: #087f5b;
+            --vet-turquoise: #20c997;
+            --vet-light: #f3fbf8;
+            --vet-dark: #174c3c;
+            --vet-gray: #6c757d;
+        }
+
+        body {
+            background-color: #f6faf9;
+            color: #263a34;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        /* NAVBAR */
+
+        .vet-navbar {
+            background: linear-gradient(
+                135deg,
+                var(--vet-green-dark),
+                var(--vet-green)
+            );
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .vet-brand {
+            color: white !important;
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: .3px;
+        }
+
+        .vet-brand-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            margin-right: 8px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,.18);
+        }
+
+        .vet-navbar .nav-link {
+            color: rgba(255,255,255,.9) !important;
+            font-weight: 500;
+            border-radius: 8px;
+            margin: 0 2px;
+            padding: 8px 12px !important;
+            transition: .2s;
+        }
+
+        .vet-navbar .nav-link:hover {
+            background-color: rgba(255,255,255,.15);
+            color: white !important;
+        }
+
+        .vet-user {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 500;
+        }
+
+        /* CONTENIDO */
+
+        main {
+            min-height: calc(100vh - 150px);
+        }
+
+        /* BOTONES */
+
+        .btn-vet {
+            background-color: var(--vet-green);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+        .btn-vet:hover {
+            background-color: var(--vet-green-dark);
+            color: white;
+        }
+
+        /* TARJETAS */
+
+        .vet-card {
+            border: none;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 5px 20px rgba(23, 76, 60, .08);
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .vet-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(23, 76, 60, .13);
+        }
+
+        /* TITULOS */
+
+        .vet-title {
+            color: var(--vet-dark);
+            font-weight: 700;
+        }
+
+        .vet-subtitle {
+            color: var(--vet-gray);
+        }
+
+        /* ICONOS */
+
+        .vet-icon {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background-color: var(--vet-light);
+            color: var(--vet-green-dark);
+            font-size: 1.6rem;
+        }
+
+        /* BADGES */
+
+        .badge-vet {
+            background-color: #dff7ee;
+            color: var(--vet-green-dark);
+            font-weight: 600;
+        }
+
+        /* TABLAS */
+
+        .table-vet {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-vet thead {
+            background-color: var(--vet-green-dark);
+            color: white;
+        }
+
+        .table-vet th {
+            font-weight: 600;
+            border: none;
+        }
+
+        /* FORMULARIOS */
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--vet-green);
+            box-shadow: 0 0 0 .2rem rgba(25,169,116,.15);
+        }
+
+        /* FOOTER */
+
+        .vet-footer {
+            background-color: var(--vet-dark);
+            color: rgba(255,255,255,.8);
+            padding: 25px 0;
+            margin-top: 50px;
+        }
+
+        .vet-footer strong {
+            color: white;
+        }
+
+        /* DROPDOWN */
+
+        .dropdown-menu {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,.12);
+        }
+
+        .dropdown-item {
+            padding: 9px 15px;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--vet-light);
+            color: var(--vet-green-dark);
+        }
+
+        /* MOBILE */
+
+        @@media (max-width: 991px) {
+
+            .vet-navbar .nav-link {
+                margin-top: 3px;
+            }
+
+            .vet-user {
+                margin-top: 8px;
+                padding: 8px 12px;
+            }
+        }
+
+    </style>
 </head>
 
 <body>
 
-    <!-- ========================================= -->
+    <!-- ============================= -->
     <!-- NAVBAR -->
-    <!-- ========================================= -->
+    <!-- ============================= -->
 
     <header>
 
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <nav class="navbar navbar-expand-lg vet-navbar">
 
             <div class="container">
 
                 <!-- LOGO -->
-                <a class="navbar-brand fw-bold"
-                   asp-area=""
+
+                <a class="navbar-brand vet-brand"
                    asp-controller="Home"
                    asp-action="Index">
 
-                    🐾 Clínica Veterinaria
+                    <span class="vet-brand-icon">
+                        <i class="bi bi-heart-pulse-fill"></i>
+                    </span>
 
+                    VetCare
                 </a>
 
-                <!-- BOTÓN RESPONSIVE -->
+
+                <!-- BOTÓN MOBILE -->
 
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
-                        data-bs-target="#navbarPrincipal"
-                        aria-controls="navbarPrincipal"
-                        aria-expanded="false"
-                        aria-label="Mostrar navegación">
+                        data-bs-target="#mainNavbar">
 
                     <span class="navbar-toggler-icon"></span>
 
                 </button>
 
 
+                <!-- MENÚ -->
+
                 <div class="collapse navbar-collapse"
-                     id="navbarPrincipal">
-
-
-                    <!-- ========================================= -->
-                    <!-- MENÚ PRINCIPAL -->
-                    <!-- ========================================= -->
+                     id="mainNavbar">
 
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                        <!-- INICIO -->
+                        <!-- USUARIO AUTENTICADO -->
 
-                        <li class="nav-item">
-
-                            <a class="nav-link"
-                               asp-area=""
-                               asp-controller="Home"
-                               asp-action="Index">
-
-                                Inicio
-
-                            </a>
-
-                        </li>
-
-
-                        <!-- ========================================= -->
-                        <!-- OPCIONES DEL ADMINISTRADOR -->
-                        <!-- ========================================= -->
-
-                        @if (User.Identity?.IsAuthenticated == true &&
-                             User.IsInRole("Administrador"))
+                        @if (SignInManager.IsSignedIn(User))
                         {
+                            <!-- CLIENTE -->
 
-                            <li class="nav-item">
+                            @if (User.IsInRole("Cliente"))
+                            {
+                                <li class="nav-item">
 
-                                <a class="nav-link"
-                                   asp-area=""
-                                   asp-controller="Admin"
-                                   asp-action="Index">
+                                    <a class="nav-link"
+                                       asp-controller="Cliente"
+                                       asp-action="Index">
 
-                                    Administración
+                                        <i class="bi bi-house-heart-fill"></i>
+                                        Inicio
+                                    </a>
 
-                                </a>
+                                </li>
 
-                            </li>
+                                <li class="nav-item">
 
+                                    <a class="nav-link"
+                                       asp-controller="ServiciosVeterinarios"
+                                       asp-action="Index">
 
-                            <li class="nav-item">
+                                        <i class="bi bi-heart-pulse"></i>
+                                        Servicios
+                                    </a>
 
-                                <a class="nav-link"
-                                   asp-area=""
-                                   asp-controller="ServiciosVeterinarios"
-                                   asp-action="Index">
+                                </li>
 
-                                    Servicios
+                                <li class="nav-item">
 
-                                </a>
+                                    <a class="nav-link"
+                                       asp-controller="Mascotas"
+                                       asp-action="Index">
 
-                            </li>
+                                        <i class="bi bi-paw-fill"></i>
+                                        Mis Mascotas
+                                    </a>
 
+                                </li>
 
-                            <li class="nav-item">
+                                <li class="nav-item">
 
-                                <a class="nav-link"
-                                   asp-area=""
-                                   asp-controller="Citas"
-                                   asp-action="Index">
+                                    <a class="nav-link"
+                                       asp-controller="Citas"
+                                       asp-action="Index">
 
-                                    Citas
+                                        <i class="bi bi-calendar2-heart"></i>
+                                        Mis Citas
+                                    </a>
 
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a class="nav-link"
-                                   asp-area=""
-                                   asp-controller="Dashboard"
-                                   asp-action="Index">
-
-                                    Dashboard
-
-                                </a>
-
-                            </li>
-
-                        }
+                                </li>
+                            }
 
 
-                        <!-- ========================================= -->
-                        <!-- OPCIONES DEL CLIENTE -->
-                        <!-- ========================================= -->
+                            <!-- ADMINISTRADOR -->
 
-                        @if (User.Identity?.IsAuthenticated == true &&
-                             User.IsInRole("Cliente"))
-                        {
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <li class="nav-item">
 
-                            <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Admin"
+                                       asp-action="Index">
 
-                                <a class="nav-link"
-                                   asp-area=""
-                                   asp-controller="Cliente"
-                                   asp-action="Index">
+                                        <i class="bi bi-speedometer2"></i>
+                                        Panel
+                                    </a>
 
-                                    Mi Panel
+                                </li>
 
-                                </a>
+                                <li class="nav-item">
 
-                            </li>
+                                    <a class="nav-link"
+                                       asp-controller="ServiciosVeterinarios"
+                                       asp-action="Index">
 
+                                        <i class="bi bi-heart-pulse"></i>
+                                        Servicios
+                                    </a>
 
-                            <li class="nav-item">
+                                </li>
 
-                                <a class="nav-link"
-                                   asp-area=""
-                                   asp-controller="ServiciosVeterinarios"
-                                   asp-action="Index">
+                                <li class="nav-item">
 
-                                    Servicios
+                                    <a class="nav-link"
+                                       asp-controller="Citas"
+                                       asp-action="Index">
 
-                                </a>
+                                        <i class="bi bi-calendar-check"></i>
+                                        Citas
+                                    </a>
 
-                            </li>
+                                </li>
 
+                                <li class="nav-item">
 
-                            <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Dashboard"
+                                       asp-action="Index">
 
-                                <a class="nav-link"
-                                   asp-area=""
-                                   asp-controller="Mascotas"
-                                   asp-action="Index">
+                                        <i class="bi bi-bar-chart-fill"></i>
+                                        Dashboard
+                                    </a>
 
-                                    Mis Mascotas
+                                </li>
 
-                                </a>
+                                <li class="nav-item">
 
-                            </li>
+                                    <a class="nav-link"
+                                       asp-controller="Reportes"
+                                       asp-action="Index">
 
+                                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                                        Reportes
+                                    </a>
 
-                            <li class="nav-item">
-
-                                <a class="nav-link"
-                                   asp-area=""
-                                   asp-controller="Citas"
-                                   asp-action="Index">
-
-                                    Mis Citas
-
-                                </a>
-
-                            </li>
-
+                                </li>
+                            }
                         }
 
                     </ul>
 
 
-                    <!-- ========================================= -->
                     <!-- PARTE DERECHA -->
-                    <!-- ========================================= -->
 
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav ms-auto">
 
-                        @if (User.Identity?.IsAuthenticated == true)
+                        @if (SignInManager.IsSignedIn(User))
                         {
-
-                            <!-- USUARIO -->
+                            var usuario = await UserManager.GetUserAsync(User);
 
                             <li class="nav-item dropdown">
 
-                                <a class="nav-link dropdown-toggle"
+                                <a class="nav-link dropdown-toggle vet-user"
                                    href="#"
                                    role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false">
+                                   data-bs-toggle="dropdown">
 
-                                    👤 @User.Identity.Name
+                                    <i class="bi bi-person-circle"></i>
 
+                                    @(usuario?.NombreCompleto ?? User.Identity?.Name)
                                 </a>
 
                                 <ul class="dropdown-menu dropdown-menu-end">
 
-                                    @if (User.IsInRole("Administrador"))
-                                    {
-                                        <li>
-                                            <span class="dropdown-item-text">
-                                                <strong>Administrador</strong>
-                                            </span>
-                                        </li>
-                                    }
+                                    <li>
 
-                                    @if (User.IsInRole("Cliente"))
-                                    {
-                                        <li>
-                                            <span class="dropdown-item-text">
-                                                <strong>Cliente</strong>
-                                            </span>
-                                        </li>
-                                    }
+                                        <div class="dropdown-item-text">
+
+                                            <strong>
+                                                @(usuario?.NombreCompleto ?? "Usuario")
+                                            </strong>
+
+                                            <br />
+
+                                            <small class="text-muted">
+                                                @User.Identity?.Name
+                                            </small>
+
+                                        </div>
+
+                                    </li>
 
                                     <li>
                                         <hr class="dropdown-divider" />
                                     </li>
-
-                                    <!-- LOGOUT -->
 
                                     <li>
 
@@ -265,8 +454,9 @@
                                               method="post">
 
                                             <button type="submit"
-                                                    class="dropdown-item">
+                                                    class="dropdown-item text-danger">
 
+                                                <i class="bi bi-box-arrow-right"></i>
                                                 Cerrar sesión
 
                                             </button>
@@ -278,40 +468,32 @@
                                 </ul>
 
                             </li>
-
                         }
                         else
                         {
-
-                            <!-- LOGIN -->
-
                             <li class="nav-item">
 
                                 <a class="nav-link"
                                    asp-area="Identity"
                                    asp-page="/Account/Login">
 
+                                    <i class="bi bi-box-arrow-in-right"></i>
                                     Iniciar sesión
-
                                 </a>
 
                             </li>
-
-
-                            <!-- REGISTRO -->
 
                             <li class="nav-item">
 
-                                <a class="btn btn-light text-primary ms-2"
+                                <a class="nav-link"
                                    asp-area="Identity"
                                    asp-page="/Account/Register">
 
+                                    <i class="bi bi-person-plus-fill"></i>
                                     Registrarse
-
                                 </a>
 
                             </li>
-
                         }
 
                     </ul>
@@ -325,49 +507,58 @@
     </header>
 
 
-    <!-- ========================================= -->
+    <!-- ============================= -->
     <!-- CONTENIDO -->
-    <!-- ========================================= -->
+    <!-- ============================= -->
 
-    <div class="container">
+    <main role="main">
 
-        <main role="main" class="pb-3">
+        @RenderBody()
 
-            @RenderBody()
-
-        </main>
-
-    </div>
+    </main>
 
 
-    <!-- ========================================= -->
+    <!-- ============================= -->
     <!-- FOOTER -->
-    <!-- ========================================= -->
+    <!-- ============================= -->
 
-    <footer class="border-top footer text-muted">
+    <footer class="vet-footer">
 
-        <div class="container text-center">
+        <div class="container">
 
-            &copy; 2026 - Clínica Veterinaria
+            <div class="row align-items-center">
 
-            -
+                <div class="col-md-6">
 
-            <a asp-area=""
-               asp-controller="Home"
-               asp-action="Privacy">
+                    <h5 class="mb-1">
 
-                Privacidad
+                        <i class="bi bi-heart-pulse-fill"></i>
+                        VetCare
 
-            </a>
+                    </h5>
+
+                    <small>
+                        Cuidando a quienes forman parte de tu familia.
+                    </small>
+
+                </div>
+
+                <div class="col-md-6 text-md-end mt-3 mt-md-0">
+
+                    <small>
+                        © @DateTime.Now.Year Clínica Veterinaria
+                    </small>
+
+                </div>
+
+            </div>
 
         </div>
 
     </footer>
 
 
-    <!-- ========================================= -->
     <!-- SCRIPTS -->
-    <!-- ========================================= -->
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
@@ -381,3 +572,4 @@
 </body>
 
 </html>
+

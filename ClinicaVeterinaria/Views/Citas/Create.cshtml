@@ -1,4 +1,5 @@
-﻿@model ClinicaVeterinaria.Models.Cita
+﻿
+@model ClinicaVeterinaria.Models.Cita
 
 @{
     ViewData["Title"] = "Solicitar Cita";
@@ -8,22 +9,25 @@
 
     <div class="row justify-content-center">
 
-        <div class="col-md-7">
+        <div class="col-md-6">
 
-            <div class="card shadow-sm">
+            <div class="card shadow">
 
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        Solicitar Cita Médica
-                    </h4>
+                    <h3 class="mb-0">
+                        Solicitar Cita
+                    </h3>
                 </div>
 
                 <div class="card-body">
 
-                    <form asp-action="Create" method="post">
+                    <form asp-action="Create"
+                          method="post">
 
-                        <div asp-validation-summary="ModelOnly"
-                             class="alert alert-danger">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="All"
+                             class="text-danger mb-3">
                         </div>
 
                         <!-- MASCOTA -->
@@ -36,8 +40,8 @@
                             </label>
 
                             <select asp-for="MascotaId"
-                                    asp-items="ViewBag.MascotaId"
-                                    class="form-select">
+                                    class="form-select"
+                                    asp-items="ViewBag.MascotaId">
 
                                 <option value="">
                                     -- Seleccione una mascota --
@@ -61,8 +65,8 @@
                             </label>
 
                             <select asp-for="ServicioVeterinarioId"
-                                    asp-items="ViewBag.ServicioVeterinarioId"
-                                    class="form-select">
+                                    class="form-select"
+                                    asp-items="ViewBag.ServicioVeterinarioId">
 
                                 <option value="">
                                     -- Seleccione un servicio --
@@ -82,12 +86,13 @@
 
                             <label asp-for="FechaCita"
                                    class="form-label">
-                                Fecha de la cita
+                                Fecha de atención
                             </label>
 
                             <input asp-for="FechaCita"
-                                   type="datetime-local"
-                                   class="form-control" />
+                                   type="date"
+                                   class="form-control"
+                                   min="@DateTime.Today.ToString("yyyy-MM-dd")" />
 
                             <span asp-validation-for="FechaCita"
                                   class="text-danger">
@@ -101,7 +106,7 @@
 
                             <button type="submit"
                                     class="btn btn-primary">
-                                Solicitar Cita
+                                Solicitar cita
                             </button>
 
                             <a asp-action="Index"
@@ -124,7 +129,6 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
 }
+

@@ -1,0 +1,418 @@
+﻿
+@model IEnumerable<ClinicaVeterinaria.Models.Mascota>
+
+@{
+    ViewData["Title"] = "Mis Mascotas";
+}
+
+<div class="container py-5">
+
+    <!-- ENCABEZADO -->
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-5">
+
+        <div>
+            <span class="section-label">
+                MIS MASCOTAS
+            </span>
+
+            <h1 class="vet-title mt-2 mb-2">
+                Mis Mascotas
+            </h1>
+
+            <p class="text-muted mb-0">
+                Administra la información de tus mascotas registradas.
+            </p>
+        </div>
+
+        <div class="mt-3 mt-md-0">
+            <a asp-action="Create"
+               class="btn btn-vet px-4">
+
+                <i class="bi bi-plus-circle-fill me-1"></i>
+                Registrar mascota
+
+            </a>
+        </div>
+
+    </div>
+
+
+    <!-- MENSAJE -->
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success shadow-sm border-0 mb-4">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+
+            @TempData["Mensaje"]
+
+        </div>
+    }
+
+
+    <!-- MASCOTAS -->
+    @if (!Model.Any())
+    {
+        <div class="vet-card p-5 text-center">
+
+            <div class="pet-empty-icon mx-auto mb-3">
+
+                <i class="bi bi-heart"></i>
+
+            </div>
+
+            <h4 class="vet-title">
+                No tienes mascotas registradas
+            </h4>
+
+            <p class="text-muted mb-4">
+                Registra a tu mascota para poder solicitar citas veterinarias.
+            </p>
+
+            <a asp-action="Create"
+               class="btn btn-vet">
+
+                <i class="bi bi-plus-circle me-1"></i>
+                Registrar mi primera mascota
+
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+
+            @foreach (var mascota in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="pet-card h-100">
+
+                        <!-- CABECERA -->
+
+                        <div class="pet-card-header">
+
+                            <div class="pet-avatar">
+
+                                @if (mascota.Especie.ToLower().Contains("perro"))
+                                {
+                                    <i class="bi bi-heart-fill"></i>
+                                }
+                                else if (mascota.Especie.ToLower().Contains("gato"))
+                                {
+                                    <i class="bi bi-emoji-smile-fill"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-paw"></i>
+                                }
+
+                            </div>
+
+                            <span class="pet-species">
+                                @mascota.Especie
+                            </span>
+
+                        </div>
+
+
+                        <!-- INFORMACIÓN -->
+
+                        <div class="pet-card-body">
+
+                            <h3>
+                                @mascota.Nombre
+                            </h3>
+
+                            <div class="pet-info">
+
+                                <div>
+                                    <i class="bi bi-tag-fill"></i>
+
+                                    <span>
+                                        <strong>Raza:</strong>
+                                        @mascota.Raza
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <i class="bi bi-heart-pulse-fill"></i>
+
+                                    <span>
+                                        Atención veterinaria
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ACCIONES -->
+
+                        <div class="pet-card-footer">
+
+                            <a asp-action="Details"
+                               asp-route-id="@mascota.Id"
+                               class="btn btn-outline-success btn-sm">
+
+                                <i class="bi bi-eye"></i>
+                                Ver
+
+                            </a>
+
+                            <a asp-action="Edit"
+                               asp-route-id="@mascota.Id"
+                               class="btn btn-warning btn-sm">
+
+                                <i class="bi bi-pencil-fill"></i>
+                                Editar
+
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@mascota.Id"
+                               class="btn btn-danger btn-sm">
+
+                                <i class="bi bi-trash-fill"></i>
+                                Eliminar
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+
+
+<style>
+
+    .section-label {
+
+        color: #19a974;
+
+        font-size: .8rem;
+
+        font-weight: 800;
+
+        letter-spacing: 2px;
+
+    }
+
+
+    /* TARJETA */
+
+    .pet-card {
+
+        background: white;
+
+        border-radius: 22px;
+
+        overflow: hidden;
+
+        border: 1px solid #edf4f1;
+
+        box-shadow:
+            0 7px 25px
+            rgba(23, 76, 60, .08);
+
+        transition:
+            transform .25s,
+            box-shadow .25s;
+
+    }
+
+
+    .pet-card:hover {
+
+        transform: translateY(-6px);
+
+        box-shadow:
+            0 15px 35px
+            rgba(23, 76, 60, .14);
+
+    }
+
+
+    /* CABECERA */
+
+    .pet-card-header {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        padding: 25px 25px 10px;
+
+    }
+
+
+    .pet-avatar {
+
+        width: 65px;
+
+        height: 65px;
+
+        border-radius: 20px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background: #dff7ee;
+
+        color: #087f5b;
+
+        font-size: 1.8rem;
+
+    }
+
+
+    .pet-species {
+
+        background: #effbf7;
+
+        color: #087f5b;
+
+        padding: 7px 13px;
+
+        border-radius: 20px;
+
+        font-size: .85rem;
+
+        font-weight: 700;
+
+    }
+
+
+    /* CUERPO */
+
+    .pet-card-body {
+
+        padding: 15px 25px 25px;
+
+    }
+
+
+    .pet-card-body h3 {
+
+        color: #174c3c;
+
+        font-weight: 800;
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .pet-info {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+        color: #6c757d;
+
+    }
+
+
+    .pet-info div {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+    }
+
+
+    .pet-info i {
+
+        color: #19a974;
+
+        font-size: 1rem;
+
+    }
+
+
+    /* FOOTER */
+
+    .pet-card-footer {
+
+        border-top: 1px solid #edf4f1;
+
+        padding: 15px 20px;
+
+        display: flex;
+
+        gap: 7px;
+
+    }
+
+
+    .pet-card-footer .btn {
+
+        flex: 1;
+
+    }
+
+
+    /* SIN MASCOTAS */
+
+    .pet-empty-icon {
+
+        width: 75px;
+
+        height: 75px;
+
+        border-radius: 50%;
+
+        background: #dff7ee;
+
+        color: #19a974;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 2rem;
+
+    }
+
+
+    @@media (max-width: 576px) {
+
+        .pet-card-footer {
+
+            flex-wrap: wrap;
+
+        }
+
+        .pet-card-footer .btn {
+
+            flex: 1 1 30%;
+
+        }
+
+    }
+
+</style>
+

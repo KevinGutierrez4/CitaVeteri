@@ -1,3 +1,4 @@
+
 using ClinicaVeterinaria.Data;
 using ClinicaVeterinaria.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -22,49 +23,32 @@ namespace ClinicaVeterinaria.Controllers
             _userManager = userManager;
         }
 
-        // =========================================================
-        // INDEX - LISTAR CITAS
-        // =========================================================
-
+        // LISTADO DE CITAS
         public async Task<IActionResult> Index()
         {
-            // ADMINISTRADOR:
-            // Puede ver todas las citas.
-            if (User.IsInRole("Administrador"))
-            {
-                var citasAdmin = await _context.Citas
-                    .Include(c => c.Mascota)
-                    .Include(c => c.ServicioVeterinario)
-                    .OrderByDescending(c => c.FechaCita)
-                    .ToListAsync();
-
-                return View(citasAdmin);
-            }
-
-            // CLIENTE:
-            // Solamente puede ver las citas de sus mascotas.
             var usuario = await _userManager.GetUserAsync(User);
 
             if (usuario == null)
                 return Challenge();
 
-            var citasCliente = await _context.Citas
+            IQueryable<Cita> consulta = _context.Citas
                 .Include(c => c.Mascota)
-                .Include(c => c.ServicioVeterinario)
-                .Where(c => c.Mascota != null &&
-                            c.Mascota.UsuarioId == usuario.Id)
+                .Include(c => c.ServicioVeterinario);
+
+            if (User.IsInRole("Cliente"))
+            {
+                consulta = consulta.Where(c =>
+                    c.Mascota.UsuarioId == usuario.Id);
+            }
+
+            var citas = await consulta
                 .OrderByDescending(c => c.FechaCita)
                 .ToListAsync();
 
-            return View(citasCliente);
+            return View(citas);
         }
 
-
-        // =========================================================
-        // CREATE - MOSTRAR FORMULARIO
-        // SOLO CLIENTE
-        // =========================================================
-
+        // FORMULARIO PARA SOLICITAR CITA
         [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> Create()
         {
@@ -73,38 +57,29 @@ namespace ClinicaVeterinaria.Controllers
             if (usuario == null)
                 return Challenge();
 
-            // Obtener únicamente las mascotas del cliente.
             var mascotas = await _context.Mascotas
                 .Where(m => m.UsuarioId == usuario.Id)
                 .OrderBy(m => m.Nombre)
                 .ToListAsync();
 
-            ViewBag.MascotaId = new SelectList(
-                mascotas,
-                "Id",
-                "Nombre"
-            );
-
-            // Obtener servicios disponibles.
             var servicios = await _context.ServiciosVeterinarios
                 .OrderBy(s => s.Nombre)
                 .ToListAsync();
 
+            ViewBag.MascotaId = new SelectList(
+                mascotas,
+                "Id",
+                "Nombre");
+
             ViewBag.ServicioVeterinarioId = new SelectList(
                 servicios,
                 "Id",
-                "Nombre"
-            );
+                "Nombre");
 
             return View();
         }
 
-
-        // =========================================================
-        // CREATE - GUARDAR CITA
-        // SOLO CLIENTE
-        // =========================================================
-
+        // GUARDAR CITA
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Cliente")]
@@ -115,112 +90,91 @@ namespace ClinicaVeterinaria.Controllers
             if (usuario == null)
                 return Challenge();
 
-            // -----------------------------------------------------
-            // VALIDAR FECHA
-            // -----------------------------------------------------
-
-            if (cita.FechaCita < DateTime.Now)
+            // Validar fecha
+            if (cita.FechaCita.Date < DateTime.Today)
             {
                 ModelState.AddModelError(
                     "FechaCita",
-                    "La fecha de la cita debe ser futura."
-                );
+                    "La fecha de la cita no puede ser anterior a hoy.");
             }
 
-            // -----------------------------------------------------
-            // VALIDAR MASCOTA
-            // -----------------------------------------------------
-
+            // Verificar que la mascota pertenece al cliente
             var mascota = await _context.Mascotas
                 .FirstOrDefaultAsync(m =>
                     m.Id == cita.MascotaId &&
-                    m.UsuarioId == usuario.Id
-                );
+                    m.UsuarioId == usuario.Id);
 
             if (mascota == null)
             {
                 ModelState.AddModelError(
                     "MascotaId",
-                    "La mascota seleccionada no pertenece a su cuenta."
-                );
+                    "La mascota seleccionada no pertenece a este usuario.");
             }
 
-            // -----------------------------------------------------
-            // VALIDAR SERVICIO
-            // -----------------------------------------------------
-
+            // Verificar que el servicio existe
             var servicio = await _context.ServiciosVeterinarios
                 .FirstOrDefaultAsync(s =>
-                    s.Id == cita.ServicioVeterinarioId
-                );
+                    s.Id == cita.ServicioVeterinarioId);
 
             if (servicio == null)
             {
                 ModelState.AddModelError(
                     "ServicioVeterinarioId",
-                    "El servicio seleccionado no existe."
-                );
+                    "Debe seleccionar un servicio válido.");
             }
 
-            // -----------------------------------------------------
-            // GUARDAR
-            // -----------------------------------------------------
+            // El estado siempre empieza como Pendiente
+            cita.Estado = "Pendiente";
 
-            if (ModelState.IsValid)
+            // Quitamos las validaciones de las propiedades de navegación
+            ModelState.Remove(nameof(Cita.Mascota));
+            ModelState.Remove(nameof(Cita.ServicioVeterinario));
+
+            if (!ModelState.IsValid)
             {
-                // Toda nueva cita comienza como Pendiente.
-                cita.Estado = "Pendiente";
+                var mascotas = await _context.Mascotas
+                    .Where(m => m.UsuarioId == usuario.Id)
+                    .OrderBy(m => m.Nombre)
+                    .ToListAsync();
 
-                _context.Citas.Add(cita);
-
-                await _context.SaveChangesAsync();
-
-                TempData["Mensaje"] =
-                    "La cita fue solicitada correctamente.";
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            // -----------------------------------------------------
-            // RECARGAR COMBOS SI HAY ERRORES
-            // -----------------------------------------------------
-
-            var mascotas = await _context.Mascotas
-                .Where(m => m.UsuarioId == usuario.Id)
-                .OrderBy(m => m.Nombre)
-                .ToListAsync();
-
-            ViewBag.MascotaId = new SelectList(
-                mascotas,
-                "Id",
-                "Nombre",
-                cita.MascotaId
-            );
-
-            var serviciosDisponibles =
-                await _context.ServiciosVeterinarios
+                var servicios = await _context.ServiciosVeterinarios
                     .OrderBy(s => s.Nombre)
                     .ToListAsync();
 
-            ViewBag.ServicioVeterinarioId = new SelectList(
-                serviciosDisponibles,
-                "Id",
-                "Nombre",
-                cita.ServicioVeterinarioId
-            );
+                ViewBag.MascotaId = new SelectList(
+                    mascotas,
+                    "Id",
+                    "Nombre",
+                    cita.MascotaId);
 
-            return View(cita);
+                ViewBag.ServicioVeterinarioId = new SelectList(
+                    servicios,
+                    "Id",
+                    "Nombre",
+                    cita.ServicioVeterinarioId);
+
+                return View(cita);
+            }
+
+            _context.Citas.Add(cita);
+            await _context.SaveChangesAsync();
+
+            TempData["Mensaje"] =
+                "La cita fue solicitada correctamente.";
+
+            return RedirectToAction(nameof(Index));
         }
 
-
-        // =========================================================
-        // DETAILS
-        // =========================================================
-
+        // DETALLES
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
                 return NotFound();
+
+            var usuario = await _userManager.GetUserAsync(User);
+
+            if (usuario == null)
+                return Challenge();
 
             var cita = await _context.Citas
                 .Include(c => c.Mascota)
@@ -230,34 +184,16 @@ namespace ClinicaVeterinaria.Controllers
             if (cita == null)
                 return NotFound();
 
-            // -----------------------------------------------------
-            // CLIENTE:
-            // Solamente puede ver sus propias citas.
-            // -----------------------------------------------------
-
-            if (User.IsInRole("Cliente"))
+            if (User.IsInRole("Cliente") &&
+                cita.Mascota.UsuarioId != usuario.Id)
             {
-                var usuario = await _userManager.GetUserAsync(User);
-
-                if (usuario == null)
-                    return Challenge();
-
-                if (cita.Mascota == null ||
-                    cita.Mascota.UsuarioId != usuario.Id)
-                {
-                    return Forbid();
-                }
+                return Forbid();
             }
 
             return View(cita);
         }
 
-
-        // =========================================================
-        // EDIT - MOSTRAR FORMULARIO
-        // SOLO ADMINISTRADOR
-        // =========================================================
-
+        // EDITAR ESTADO - ADMINISTRADOR
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -272,168 +208,60 @@ namespace ClinicaVeterinaria.Controllers
             if (cita == null)
                 return NotFound();
 
-            // Lista de mascotas.
-            var mascotas = await _context.Mascotas
-                .OrderBy(m => m.Nombre)
-                .ToListAsync();
-
-            ViewBag.MascotaId = new SelectList(
-                mascotas,
-                "Id",
-                "Nombre",
-                cita.MascotaId
-            );
-
-            // Lista de servicios.
-            var servicios = await _context.ServiciosVeterinarios
-                .OrderBy(s => s.Nombre)
-                .ToListAsync();
-
-            ViewBag.ServicioVeterinarioId = new SelectList(
-                servicios,
-                "Id",
-                "Nombre",
-                cita.ServicioVeterinarioId
-            );
-
             return View(cita);
         }
-
-
-        // =========================================================
-        // EDIT - GUARDAR CAMBIOS
-        // SOLO ADMINISTRADOR
-        // =========================================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> Edit(int id, Cita cita)
+        public async Task<IActionResult> Edit(
+            int id,
+            Cita cita)
         {
             if (id != cita.Id)
                 return NotFound();
 
-            // -----------------------------------------------------
-            // VALIDAR MASCOTA
-            // -----------------------------------------------------
-
-            var mascotaExiste = await _context.Mascotas
-                .AnyAsync(m => m.Id == cita.MascotaId);
-
-            if (!mascotaExiste)
-            {
-                ModelState.AddModelError(
-                    "MascotaId",
-                    "La mascota seleccionada no existe."
-                );
-            }
-
-            // -----------------------------------------------------
-            // VALIDAR SERVICIO
-            // -----------------------------------------------------
-
-            var servicioExiste =
-                await _context.ServiciosVeterinarios
-                    .AnyAsync(s =>
-                        s.Id == cita.ServicioVeterinarioId
-                    );
-
-            if (!servicioExiste)
-            {
-                ModelState.AddModelError(
-                    "ServicioVeterinarioId",
-                    "El servicio seleccionado no existe."
-                );
-            }
-
-            // -----------------------------------------------------
-            // VALIDAR ESTADO
-            // -----------------------------------------------------
-
-            var estadosPermitidos = new[]
-            {
-                "Pendiente",
-                "Atendida",
-                "Cancelada"
-            };
-
-            if (!estadosPermitidos.Contains(cita.Estado))
+            if (cita.Estado != "Pendiente" &&
+                cita.Estado != "Atendida" &&
+                cita.Estado != "Cancelada")
             {
                 ModelState.AddModelError(
                     "Estado",
-                    "El estado seleccionado no es válido."
-                );
+                    "Estado no válido.");
             }
 
-            // -----------------------------------------------------
-            // GUARDAR CAMBIOS
-            // -----------------------------------------------------
+            ModelState.Remove(nameof(Cita.Mascota));
+            ModelState.Remove(nameof(Cita.ServicioVeterinario));
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(cita);
+                var citaExistente = await _context.Citas
+                    .FirstOrDefaultAsync(c => c.Id == id);
 
-                    await _context.SaveChangesAsync();
+                if (citaExistente == null)
+                    return NotFound();
 
-                    TempData["Mensaje"] =
-                        "La cita fue actualizada correctamente.";
+                citaExistente.FechaCita = cita.FechaCita;
+                citaExistente.Estado = cita.Estado;
 
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    var existe = await _context.Citas
-                        .AnyAsync(c => c.Id == cita.Id);
+                await _context.SaveChangesAsync();
 
-                    if (!existe)
-                        return NotFound();
-
-                    throw;
-                }
+                return RedirectToAction(nameof(Index));
             }
-
-            // -----------------------------------------------------
-            // RECARGAR COMBOS SI HAY ERRORES
-            // -----------------------------------------------------
-
-            var mascotas = await _context.Mascotas
-                .OrderBy(m => m.Nombre)
-                .ToListAsync();
-
-            ViewBag.MascotaId = new SelectList(
-                mascotas,
-                "Id",
-                "Nombre",
-                cita.MascotaId
-            );
-
-            var servicios = await _context.ServiciosVeterinarios
-                .OrderBy(s => s.Nombre)
-                .ToListAsync();
-
-            ViewBag.ServicioVeterinarioId = new SelectList(
-                servicios,
-                "Id",
-                "Nombre",
-                cita.ServicioVeterinarioId
-            );
 
             return View(cita);
         }
 
-
-        // =========================================================
-        // DELETE - MOSTRAR CONFIRMACIÓN
-        // ADMINISTRADOR Y CLIENTE
-        // =========================================================
-
-        [Authorize(Roles = "Administrador,Cliente")]
+        // CANCELAR / ELIMINAR
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
                 return NotFound();
+
+            var usuario = await _userManager.GetUserAsync(User);
+
+            if (usuario == null)
+                return Challenge();
 
             var cita = await _context.Citas
                 .Include(c => c.Mascota)
@@ -443,46 +271,24 @@ namespace ClinicaVeterinaria.Controllers
             if (cita == null)
                 return NotFound();
 
-            // -----------------------------------------------------
-            // CLIENTE:
-            // Solo puede cancelar citas de sus propias mascotas.
-            // -----------------------------------------------------
-
-            if (User.IsInRole("Cliente"))
+            if (User.IsInRole("Cliente") &&
+                cita.Mascota.UsuarioId != usuario.Id)
             {
-                var usuario = await _userManager.GetUserAsync(User);
-
-                if (usuario == null)
-                    return Challenge();
-
-                if (cita.Mascota == null ||
-                    cita.Mascota.UsuarioId != usuario.Id)
-                {
-                    return Forbid();
-                }
-            }
-
-            // No permitir cancelar una cita ya cancelada.
-            if (cita.Estado == "Cancelada")
-            {
-                return RedirectToAction(nameof(Index));
+                return Forbid();
             }
 
             return View(cita);
         }
 
-
-        // =========================================================
-        // DELETE - CANCELAR CITA
-        // ADMINISTRADOR Y CLIENTE
-        // =========================================================
-
-        [HttpPost]
-        [ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador,Cliente")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var usuario = await _userManager.GetUserAsync(User);
+
+            if (usuario == null)
+                return Challenge();
+
             var cita = await _context.Citas
                 .Include(c => c.Mascota)
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -490,37 +296,27 @@ namespace ClinicaVeterinaria.Controllers
             if (cita == null)
                 return NotFound();
 
-            // -----------------------------------------------------
-            // CLIENTE:
-            // Solo puede cancelar sus propias citas.
-            // -----------------------------------------------------
-
             if (User.IsInRole("Cliente"))
             {
-                var usuario = await _userManager.GetUserAsync(User);
-
-                if (usuario == null)
-                    return Challenge();
-
-                if (cita.Mascota == null ||
-                    cita.Mascota.UsuarioId != usuario.Id)
-                {
+                if (cita.Mascota.UsuarioId != usuario.Id)
                     return Forbid();
-                }
+
+                cita.Estado = "Cancelada";
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
             }
 
-            // -----------------------------------------------------
-            // CAMBIAR ESTADO
-            // -----------------------------------------------------
+            if (User.IsInRole("Administrador"))
+            {
+                _context.Citas.Remove(cita);
+                await _context.SaveChangesAsync();
 
-            cita.Estado = "Cancelada";
+                return RedirectToAction(nameof(Index));
+            }
 
-            await _context.SaveChangesAsync();
-
-            TempData["Mensaje"] =
-                "La cita fue cancelada correctamente.";
-
-            return RedirectToAction(nameof(Index));
+            return Forbid();
         }
     }
 }
+

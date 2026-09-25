@@ -1,0 +1,81 @@
+﻿@model ClinicaVeterinaria.Models.Cita
+
+@{
+    ViewData["Title"] = "Cancelar Cita";
+}
+
+<div class="container mt-4">
+
+    <h1>Cancelar Cita</h1>
+
+    <div class="alert alert-warning mt-3">
+        ¿Estás seguro de que deseas cancelar esta cita?
+    </div>
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <h4>Información de la Cita</h4>
+
+            <hr />
+
+            <dl class="row">
+
+                <dt class="col-sm-4">
+                    Mascota
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.Mascota.Nombre
+                </dd>
+
+                <dt class="col-sm-4">
+                    Servicio
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.ServicioVeterinario.Nombre
+                </dd>
+
+                <dt class="col-sm-4">
+                    Fecha
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.FechaCita.ToString("dd/MM/yyyy")
+                </dd>
+
+                <dt class="col-sm-4">
+                    Estado actual
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.Estado
+                </dd>
+
+            </dl>
+
+            <form asp-action="Delete"
+                  method="post">
+
+                <input type="hidden"
+                       asp-for="Id" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    Sí, cancelar cita
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Volver
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
