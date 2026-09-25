@@ -1,8 +1,842 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+@{
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- HERO -->
+
+<section class="vet-hero">
+
+    <div class="container">
+
+        <div class="row align-items-center min-vh-75">
+
+            <div class="col-lg-6">
+
+                <span class="hero-badge">
+                    <i class="bi bi-heart-pulse-fill"></i>
+                    Clínica Veterinaria
+                </span>
+
+                <h1 class="hero-title">
+                    Cuidamos a quienes
+                    <span>más quieres</span>
+                </h1>
+
+                <p class="hero-text">
+                    En VetCare brindamos atención veterinaria
+                    profesional y cercana para cuidar la salud
+                    y el bienestar de tus mascotas.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 mt-4">
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        @if (User.IsInRole("Cliente"))
+                        {
+                            <a asp-controller="Citas"
+                               asp-action="Create"
+                               class="btn btn-vet btn-lg px-4">
+
+                                <i class="bi bi-calendar2-heart"></i>
+                                Solicitar una cita
+
+                            </a>
+
+                            <a asp-controller="ServiciosVeterinarios"
+                               asp-action="Index"
+                               class="btn btn-outline-success btn-lg px-4">
+
+                                Ver servicios
+
+                            </a>
+                        }
+                        else if (User.IsInRole("Administrador"))
+                        {
+                            <a asp-controller="Admin"
+                               asp-action="Index"
+                               class="btn btn-vet btn-lg px-4">
+
+                                <i class="bi bi-speedometer2"></i>
+                                Ir al panel
+
+                            </a>
+
+                            <a asp-controller="Dashboard"
+                               asp-action="Index"
+                               class="btn btn-outline-success btn-lg px-4">
+
+                                Ver dashboard
+
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <a asp-area="Identity"
+                           asp-page="/Account/Register"
+                           class="btn btn-vet btn-lg px-4">
+
+                            <i class="bi bi-person-plus-fill"></i>
+                            Crear una cuenta
+
+                        </a>
+
+                        <a asp-area="Identity"
+                           asp-page="/Account/Login"
+                           class="btn btn-outline-success btn-lg px-4">
+
+                            Iniciar sesión
+
+                        </a>
+                    }
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-6 text-center mt-5 mt-lg-0">
+
+                <div class="hero-pet-card">
+
+                    <div class="pet-circle">
+
+                        <i class="bi bi-heart-pulse-fill"></i>
+
+                    </div>
+
+                    <div class="paw paw-1">
+                        <i class="bi bi-paw-fill"></i>
+                    </div>
+
+                    <div class="paw paw-2">
+                        <i class="bi bi-paw-fill"></i>
+                    </div>
+
+                    <div class="paw paw-3">
+                        <i class="bi bi-paw-fill"></i>
+                    </div>
+
+                    <div class="hero-card-content">
+
+                        <h4>
+                            Salud y bienestar
+                        </h4>
+
+                        <p>
+                            Para perros, gatos y todos
+                            los compañeros de tu familia.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- SERVICIOS -->
+
+<section class="py-5">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <span class="section-label">
+                LO QUE OFRECEMOS
+            </span>
+
+            <h2 class="section-title">
+                Servicios para tus mascotas
+            </h2>
+
+            <p class="text-muted">
+                Atención pensada para mantener a tus mascotas
+                saludables y felices.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+
+                <div class="home-service-card">
+
+                    <div class="service-icon">
+                        <i class="bi bi-heart-pulse-fill"></i>
+                    </div>
+
+                    <h4>
+                        Atención veterinaria
+                    </h4>
+
+                    <p>
+                        Evaluación y cuidado profesional
+                        para la salud de tu mascota.
+                    </p>
+
+                    <a asp-controller="ServiciosVeterinarios"
+                       asp-action="Index"
+                       class="service-link">
+
+                        Ver servicios
+                        <i class="bi bi-arrow-right"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="home-service-card">
+
+                    <div class="service-icon">
+                        <i class="bi bi-calendar2-heart-fill"></i>
+                    </div>
+
+                    <h4>
+                        Citas veterinarias
+                    </h4>
+
+                    <p>
+                        Solicita una cita de manera rápida
+                        y sencilla desde cualquier dispositivo.
+                    </p>
+
+                    @if (User.IsInRole("Cliente"))
+                    {
+                        <a asp-controller="Citas"
+                           asp-action="Create"
+                           class="service-link">
+
+                            Solicitar cita
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Citas"
+                           asp-action="Index"
+                           class="service-link">
+
+                            Ver citas
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+                    }
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="home-service-card">
+
+                    <div class="service-icon">
+                        <i class="bi bi-paw-fill"></i>
+                    </div>
+
+                    <h4>
+                        Cuidado de mascotas
+                    </h4>
+
+                    <p>
+                        Registra y administra fácilmente
+                        la información de tus mascotas.
+                    </p>
+
+                    @if (User.IsInRole("Cliente"))
+                    {
+                        <a asp-controller="Mascotas"
+                           asp-action="Index"
+                           class="service-link">
+
+                            Mis mascotas
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="service-link text-muted">
+                            Atención personalizada
+                        </span>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- INFORMACIÓN -->
+
+<section class="vet-info-section py-5">
+
+    <div class="container">
+
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-6">
+
+                <span class="section-label">
+                    ¿POR QUÉ VETCARE?
+                </span>
+
+                <h2 class="section-title">
+                    Tu mascota merece
+                    el mejor cuidado
+                </h2>
+
+                <p class="text-muted mb-4">
+                    Nuestro sistema facilita la gestión de las
+                    atenciones veterinarias para que puedas
+                    concentrarte en lo más importante:
+                    el bienestar de tu mascota.
+                </p>
+
+
+                <div class="vet-feature">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+
+                    <div>
+                        <h5>
+                            Atención organizada
+                        </h5>
+
+                        <p>
+                            Gestiona fácilmente tus citas
+                            y servicios veterinarios.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="vet-feature">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <div>
+                        <h5>
+                            Información segura
+                        </h5>
+
+                        <p>
+                            Tus datos y los de tus mascotas
+                            están protegidos mediante el sistema
+                            de autenticación.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="vet-feature">
+
+                    <div class="feature-icon">
+                        <i class="bi bi-phone"></i>
+                    </div>
+
+                    <div>
+                        <h5>
+                            Fácil de utilizar
+                        </h5>
+
+                        <p>
+                            Accede al sistema desde computadora,
+                            tablet o teléfono.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-6">
+
+                <div class="vet-info-card">
+
+                    <div class="info-paw">
+                        <i class="bi bi-paw-fill"></i>
+                    </div>
+
+                    <h3>
+                        Siempre cerca de ti
+                    </h3>
+
+                    <p>
+                        Consulta tus servicios, administra
+                        tus mascotas y solicita citas desde
+                        un solo lugar.
+                    </p>
+
+                    <div class="info-stats">
+
+                        <div>
+                            <strong>
+                                🐾
+                            </strong>
+
+                            <span>
+                                Cuidado
+                            </span>
+                        </div>
+
+                        <div>
+                            <strong>
+                                ❤️
+                            </strong>
+
+                            <span>
+                                Confianza
+                            </span>
+                        </div>
+
+                        <div>
+                            <strong>
+                                🩺
+                            </strong>
+
+                            <span>
+                                Salud
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<style>
+
+    /* HERO */
+
+    .vet-hero {
+        background:
+            radial-gradient(
+                circle at 80% 20%,
+                rgba(32, 201, 151, .18),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #effbf7,
+                #ffffff
+            );
+
+        overflow: hidden;
+    }
+
+    .min-vh-75 {
+        min-height: 620px;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        background: #dff7ee;
+        color: #087f5b;
+
+        padding: 8px 15px;
+        border-radius: 50px;
+
+        font-weight: 600;
+        font-size: .9rem;
+    }
+
+    .hero-title {
+        color: #174c3c;
+        font-size: clamp(2.7rem, 6vw, 4.5rem);
+        font-weight: 800;
+        line-height: 1.05;
+        margin-top: 20px;
+    }
+
+    .hero-title span {
+        display: block;
+        color: #19a974;
+    }
+
+    .hero-text {
+        color: #687d75;
+        font-size: 1.15rem;
+        line-height: 1.7;
+        max-width: 600px;
+    }
+
+    .hero-pet-card {
+        position: relative;
+        width: 400px;
+        max-width: 90%;
+        min-height: 400px;
+
+        margin: auto;
+
+        border-radius: 50px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #19a974,
+                #087f5b
+            );
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        box-shadow:
+            0 25px 50px
+            rgba(8,127,91,.25);
+    }
+
+    .pet-circle {
+        width: 220px;
+        height: 220px;
+
+        border-radius: 50%;
+
+        background: rgba(255,255,255,.16);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: white;
+
+        font-size: 7rem;
+
+        border: 2px solid rgba(255,255,255,.2);
+    }
+
+    .hero-card-content {
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        right: 30px;
+
+        background: rgba(255,255,255,.95);
+
+        padding: 18px;
+        border-radius: 18px;
+
+        text-align: center;
+    }
+
+    .hero-card-content h4 {
+        color: #174c3c;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .hero-card-content p {
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .paw {
+        position: absolute;
+        color: rgba(255,255,255,.2);
+        font-size: 2rem;
+    }
+
+    .paw-1 {
+        top: 50px;
+        left: 50px;
+    }
+
+    .paw-2 {
+        top: 100px;
+        right: 50px;
+        font-size: 1.5rem;
+    }
+
+    .paw-3 {
+        bottom: 150px;
+        left: 40px;
+        font-size: 1.3rem;
+    }
+
+
+    /* SECCIONES */
+
+    .section-label {
+        color: #19a974;
+        font-size: .8rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+    }
+
+    .section-title {
+        color: #174c3c;
+        font-weight: 800;
+        font-size: 2.4rem;
+        margin-top: 8px;
+    }
+
+
+    /* SERVICIOS */
+
+    .home-service-card {
+        height: 100%;
+
+        padding: 35px;
+
+        background: white;
+
+        border-radius: 20px;
+
+        box-shadow:
+            0 8px 30px
+            rgba(23,76,60,.07);
+
+        transition:
+            transform .25s,
+            box-shadow .25s;
+    }
+
+    .home-service-card:hover {
+        transform: translateY(-7px);
+
+        box-shadow:
+            0 15px 35px
+            rgba(23,76,60,.13);
+    }
+
+    .service-icon {
+        width: 65px;
+        height: 65px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #dff7ee;
+
+        color: #087f5b;
+
+        border-radius: 16px;
+
+        font-size: 1.8rem;
+
+        margin-bottom: 22px;
+    }
+
+    .home-service-card h4 {
+        color: #174c3c;
+        font-weight: 700;
+    }
+
+    .home-service-card p {
+        color: #6c757d;
+        line-height: 1.7;
+    }
+
+    .service-link {
+        color: #19a974;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .service-link:hover {
+        color: #087f5b;
+    }
+
+
+    /* INFORMACIÓN */
+
+    .vet-info-section {
+        background: #effbf7;
+    }
+
+    .vet-feature {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+    .feature-icon {
+        min-width: 45px;
+        height: 45px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #dff7ee;
+        color: #19a974;
+
+        border-radius: 12px;
+    }
+
+    .vet-feature h5 {
+        color: #174c3c;
+        font-weight: 700;
+        margin-bottom: 3px;
+    }
+
+    .vet-feature p {
+        color: #6c757d;
+        margin: 0;
+    }
+
+
+    /* TARJETA INFORMACIÓN */
+
+    .vet-info-card {
+        background:
+            linear-gradient(
+                145deg,
+                #087f5b,
+                #19a974
+            );
+
+        border-radius: 30px;
+
+        padding: 50px;
+
+        color: white;
+
+        box-shadow:
+            0 20px 45px
+            rgba(8,127,91,.2);
+    }
+
+    .info-paw {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+
+    .vet-info-card h3 {
+        font-size: 2rem;
+        font-weight: 800;
+    }
+
+    .vet-info-card p {
+        color: rgba(255,255,255,.85);
+        line-height: 1.7;
+    }
+
+    .info-stats {
+        display: flex;
+        justify-content: space-between;
+
+        margin-top: 35px;
+
+        padding-top: 25px;
+
+        border-top:
+            1px solid
+            rgba(255,255,255,.2);
+    }
+
+    .info-stats div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .info-stats strong {
+        font-size: 1.6rem;
+    }
+
+    .info-stats span {
+        font-size: .85rem;
+        color: rgba(255,255,255,.8);
+    }
+
+
+    /* RESPONSIVE */
+
+    @@media (max-width: 991px) {
+
+        .hero-title {
+            text-align: center;
+        }
+
+        .hero-text {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-badge {
+            display: flex;
+            width: fit-content;
+            margin: auto;
+        }
+
+        .hero-pet-card {
+            min-height: 350px;
+        }
+
+        .d-flex.flex-wrap {
+            justify-content: center;
+        }
+    }
+
+
+    @@media (max-width: 576px) {
+
+        .hero-pet-card {
+            width: 320px;
+            min-height: 320px;
+        }
+
+        .pet-circle {
+            width: 170px;
+            height: 170px;
+            font-size: 5rem;
+        }
+
+        .vet-info-card {
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+    }
+
+</style>
+

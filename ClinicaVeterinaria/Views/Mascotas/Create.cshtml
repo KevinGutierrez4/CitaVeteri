@@ -1,0 +1,83 @@
+﻿
+@model ClinicaVeterinaria.Models.Mascota
+
+@{
+    ViewData["Title"] = "Registrar Mascota";
+}
+
+<div class="container mt-4">
+
+    <h1>Registrar Mascota</h1>
+
+    <hr />
+
+    <form asp-controller="Mascotas"
+          asp-action="Create"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All"
+             class="text-danger mb-3">
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Nombre" class="form-label">
+                Nombre
+            </label>
+
+            <input asp-for="Nombre"
+                   class="form-control"
+                   placeholder="Ej. Max" />
+
+            <span asp-validation-for="Nombre"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Especie" class="form-label">
+                Especie
+            </label>
+
+            <input asp-for="Especie"
+                   class="form-control"
+                   placeholder="Ej. Perro" />
+
+            <span asp-validation-for="Especie"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Raza" class="form-label">
+                Raza
+            </label>
+
+            <input asp-for="Raza"
+                   class="form-control"
+                   placeholder="Ej. Labrador" />
+
+            <span asp-validation-for="Raza"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <button type="submit"
+                class="btn btn-success">
+            Guardar mascota
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

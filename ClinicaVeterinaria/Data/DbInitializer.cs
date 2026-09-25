@@ -1,4 +1,4 @@
-﻿using ClinicaVeterinaria.Data;
+﻿
 using Microsoft.AspNetCore.Identity;
 
 namespace ClinicaVeterinaria.Data
@@ -37,25 +37,39 @@ namespace ClinicaVeterinaria.Data
             // CREAR ADMINISTRADOR
             // ==========================================
 
-            string email = "admin@clinica.com";
-            string password = "Admin123";
+            string adminEmail = "admin@clinica.com";
+            string adminPassword = "Admin123";
 
-            var admin = await userManager.FindByEmailAsync(email);
+            var admin = await userManager.FindByEmailAsync(
+                adminEmail);
 
             if (admin == null)
             {
                 admin = new ApplicationUser
                 {
-                    UserName = email,
-                    Email = email,
+                    UserName = adminEmail,
+                    Email = adminEmail,
                     NombreCompleto = "Administrador"
                 };
 
                 var result = await userManager.CreateAsync(
                     admin,
-                    password);
+                    adminPassword);
 
                 if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(
+                        admin,
+                        "Administrador");
+                }
+            }
+            else
+            {
+                // Si el administrador ya existe,
+                // nos aseguramos de que tenga su rol.
+                if (!await userManager.IsInRoleAsync(
+                    admin,
+                    "Administrador"))
                 {
                     await userManager.AddToRoleAsync(
                         admin,
@@ -65,3 +79,4 @@ namespace ClinicaVeterinaria.Data
         }
     }
 }
+

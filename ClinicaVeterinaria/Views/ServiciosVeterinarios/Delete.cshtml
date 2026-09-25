@@ -8,33 +8,51 @@
 
     <h1>Eliminar Servicio</h1>
 
-    <div class="alert alert-danger">
-
-        <h4>¿Está seguro de eliminar este servicio?</h4>
-
-        <p>
-            Esta acción no se puede deshacer.
-        </p>
-
+    <div class="alert alert-danger mt-3">
+        ¿Estás seguro de que deseas eliminar este servicio?
     </div>
 
     <div class="card">
+
         <div class="card-body">
 
             <h4>@Model.Nombre</h4>
 
-            <p>
-                @Model.Descripcion
-            </p>
+            <hr />
 
-            <p>
-                <strong>Precio:</strong>
-                Bs. @Model.Precio.ToString("0.00")
-            </p>
+            <dl class="row">
 
-            <form asp-action="Delete" method="post">
+                <dt class="col-sm-3">
+                    Nombre
+                </dt>
 
-                <input type="hidden" asp-for="Id" />
+                <dd class="col-sm-9">
+                    @Model.Nombre
+                </dd>
+
+                <dt class="col-sm-3">
+                    Descripción
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.Descripcion
+                </dd>
+
+                <dt class="col-sm-3">
+                    Precio
+                </dt>
+
+                <dd class="col-sm-9">
+                    Bs. @Model.Precio.ToString("0.00")
+                </dd>
+
+            </dl>
+
+            <form asp-action="Delete"
+                  method="post">
+
+                <input type="hidden"
+                       asp-for="Id" />
 
                 <button type="submit"
                         class="btn btn-danger">
@@ -49,6 +67,7 @@
             </form>
 
         </div>
+
     </div>
 
 </div>

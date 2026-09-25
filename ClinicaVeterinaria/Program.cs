@@ -1,8 +1,16 @@
+
 using ClinicaVeterinaria.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ========================================
+// CONFIGURACIÓN DE QUESTPDF
+// ========================================
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 // ========================================
 // CONEXIÓN A LA BASE DE DATOS
@@ -95,3 +103,4 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+

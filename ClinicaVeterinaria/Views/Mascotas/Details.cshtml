@@ -1,0 +1,97 @@
+﻿@model ClinicaVeterinaria.Models.Cita
+
+@{
+    ViewData["Title"] = "Detalles de la Cita";
+}
+
+<div class="container mt-4">
+
+    <h1>Detalles de la Cita</h1>
+
+    <div class="card mt-3">
+
+        <div class="card-body">
+
+            <h4>Información de la Cita</h4>
+
+            <hr />
+
+            <dl class="row">
+
+                <dt class="col-sm-4">
+                    Mascota
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.Mascota.Nombre
+                </dd>
+
+                <dt class="col-sm-4">
+                    Especie
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.Mascota.Especie
+                </dd>
+
+                <dt class="col-sm-4">
+                    Raza
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.Mascota.Raza
+                </dd>
+
+                <dt class="col-sm-4">
+                    Servicio
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.ServicioVeterinario.Nombre
+                </dd>
+
+                <dt class="col-sm-4">
+                    Precio
+                </dt>
+
+                <dd class="col-sm-8">
+                    Bs. @Model.ServicioVeterinario.Precio.ToString("0.00")
+                </dd>
+
+                <dt class="col-sm-4">
+                    Fecha
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.FechaCita.ToString("dd/MM/yyyy")
+                </dd>
+
+                <dt class="col-sm-4">
+                    Estado
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.Estado
+                </dd>
+
+            </dl>
+
+            @if (User.IsInRole("Administrador"))
+            {
+                <a asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-warning">
+                    Editar
+                </a>
+            }
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Volver
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
