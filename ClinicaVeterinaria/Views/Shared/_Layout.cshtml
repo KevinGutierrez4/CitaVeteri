@@ -1,0 +1,383 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Clínica Veterinaria</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ClinicaVeterinaria.styles.css" asp-append-version="true" />
+</head>
+
+<body>
+
+    <!-- ========================================= -->
+    <!-- NAVBAR -->
+    <!-- ========================================= -->
+
+    <header>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+
+            <div class="container">
+
+                <!-- LOGO -->
+                <a class="navbar-brand fw-bold"
+                   asp-area=""
+                   asp-controller="Home"
+                   asp-action="Index">
+
+                    🐾 Clínica Veterinaria
+
+                </a>
+
+                <!-- BOTÓN RESPONSIVE -->
+
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarPrincipal"
+                        aria-controls="navbarPrincipal"
+                        aria-expanded="false"
+                        aria-label="Mostrar navegación">
+
+                    <span class="navbar-toggler-icon"></span>
+
+                </button>
+
+
+                <div class="collapse navbar-collapse"
+                     id="navbarPrincipal">
+
+
+                    <!-- ========================================= -->
+                    <!-- MENÚ PRINCIPAL -->
+                    <!-- ========================================= -->
+
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                        <!-- INICIO -->
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               asp-area=""
+                               asp-controller="Home"
+                               asp-action="Index">
+
+                                Inicio
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- ========================================= -->
+                        <!-- OPCIONES DEL ADMINISTRADOR -->
+                        <!-- ========================================= -->
+
+                        @if (User.Identity?.IsAuthenticated == true &&
+                             User.IsInRole("Administrador"))
+                        {
+
+                            <li class="nav-item">
+
+                                <a class="nav-link"
+                                   asp-area=""
+                                   asp-controller="Admin"
+                                   asp-action="Index">
+
+                                    Administración
+
+                                </a>
+
+                            </li>
+
+
+                            <li class="nav-item">
+
+                                <a class="nav-link"
+                                   asp-area=""
+                                   asp-controller="ServiciosVeterinarios"
+                                   asp-action="Index">
+
+                                    Servicios
+
+                                </a>
+
+                            </li>
+
+
+                            <li class="nav-item">
+
+                                <a class="nav-link"
+                                   asp-area=""
+                                   asp-controller="Citas"
+                                   asp-action="Index">
+
+                                    Citas
+
+                                </a>
+
+                            </li>
+
+
+                            <li class="nav-item">
+
+                                <a class="nav-link"
+                                   asp-area=""
+                                   asp-controller="Dashboard"
+                                   asp-action="Index">
+
+                                    Dashboard
+
+                                </a>
+
+                            </li>
+
+                        }
+
+
+                        <!-- ========================================= -->
+                        <!-- OPCIONES DEL CLIENTE -->
+                        <!-- ========================================= -->
+
+                        @if (User.Identity?.IsAuthenticated == true &&
+                             User.IsInRole("Cliente"))
+                        {
+
+                            <li class="nav-item">
+
+                                <a class="nav-link"
+                                   asp-area=""
+                                   asp-controller="Cliente"
+                                   asp-action="Index">
+
+                                    Mi Panel
+
+                                </a>
+
+                            </li>
+
+
+                            <li class="nav-item">
+
+                                <a class="nav-link"
+                                   asp-area=""
+                                   asp-controller="ServiciosVeterinarios"
+                                   asp-action="Index">
+
+                                    Servicios
+
+                                </a>
+
+                            </li>
+
+
+                            <li class="nav-item">
+
+                                <a class="nav-link"
+                                   asp-area=""
+                                   asp-controller="Mascotas"
+                                   asp-action="Index">
+
+                                    Mis Mascotas
+
+                                </a>
+
+                            </li>
+
+
+                            <li class="nav-item">
+
+                                <a class="nav-link"
+                                   asp-area=""
+                                   asp-controller="Citas"
+                                   asp-action="Index">
+
+                                    Mis Citas
+
+                                </a>
+
+                            </li>
+
+                        }
+
+                    </ul>
+
+
+                    <!-- ========================================= -->
+                    <!-- PARTE DERECHA -->
+                    <!-- ========================================= -->
+
+                    <ul class="navbar-nav">
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+
+                            <!-- USUARIO -->
+
+                            <li class="nav-item dropdown">
+
+                                <a class="nav-link dropdown-toggle"
+                                   href="#"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+
+                                    👤 @User.Identity.Name
+
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-menu-end">
+
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <li>
+                                            <span class="dropdown-item-text">
+                                                <strong>Administrador</strong>
+                                            </span>
+                                        </li>
+                                    }
+
+                                    @if (User.IsInRole("Cliente"))
+                                    {
+                                        <li>
+                                            <span class="dropdown-item-text">
+                                                <strong>Cliente</strong>
+                                            </span>
+                                        </li>
+                                    }
+
+                                    <li>
+                                        <hr class="dropdown-divider" />
+                                    </li>
+
+                                    <!-- LOGOUT -->
+
+                                    <li>
+
+                                        <form asp-area="Identity"
+                                              asp-page="/Account/Logout"
+                                              method="post">
+
+                                            <button type="submit"
+                                                    class="dropdown-item">
+
+                                                Cerrar sesión
+
+                                            </button>
+
+                                        </form>
+
+                                    </li>
+
+                                </ul>
+
+                            </li>
+
+                        }
+                        else
+                        {
+
+                            <!-- LOGIN -->
+
+                            <li class="nav-item">
+
+                                <a class="nav-link"
+                                   asp-area="Identity"
+                                   asp-page="/Account/Login">
+
+                                    Iniciar sesión
+
+                                </a>
+
+                            </li>
+
+
+                            <!-- REGISTRO -->
+
+                            <li class="nav-item">
+
+                                <a class="btn btn-light text-primary ms-2"
+                                   asp-area="Identity"
+                                   asp-page="/Account/Register">
+
+                                    Registrarse
+
+                                </a>
+
+                            </li>
+
+                        }
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+    <!-- ========================================= -->
+    <!-- CONTENIDO -->
+    <!-- ========================================= -->
+
+    <div class="container">
+
+        <main role="main" class="pb-3">
+
+            @RenderBody()
+
+        </main>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- FOOTER -->
+    <!-- ========================================= -->
+
+    <footer class="border-top footer text-muted">
+
+        <div class="container text-center">
+
+            &copy; 2026 - Clínica Veterinaria
+
+            -
+
+            <a asp-area=""
+               asp-controller="Home"
+               asp-action="Privacy">
+
+                Privacidad
+
+            </a>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ========================================= -->
+    <!-- SCRIPTS -->
+    <!-- ========================================= -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>

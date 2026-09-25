@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "Panel de Cliente";
+}
+
+<div class="container mt-4">
+
+    <div class="row mb-4">
+        <div class="col">
+
+            <h1 class="display-5">
+                Panel de Cliente
+            </h1>
+
+            <p class="text-muted">
+                Bienvenido a la Clínica Veterinaria.
+            </p>
+
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Servicios -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+
+                    <h5 class="card-title">
+                        Servicios Veterinarios
+                    </h5>
+
+                    <p class="card-text">
+                        Consulta los servicios disponibles
+                        en nuestra clínica.
+                    </p>
+
+                    <a asp-controller="ServiciosVeterinarios"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        Ver servicios
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Mascotas -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+
+                    <h5 class="card-title">
+                        Mis Mascotas
+                    </h5>
+
+                    <p class="card-text">
+                        Registra y consulta tus mascotas.
+                    </p>
+
+                    <a asp-controller="Mascotas"
+                       asp-action="Index"
+                       class="btn btn-success">
+                        Mis mascotas
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Citas -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+
+                    <h5 class="card-title">
+                        Mis Citas
+                    </h5>
+
+                    <p class="card-text">
+                        Solicita y consulta tus citas médicas.
+                    </p>
+
+                    <a asp-controller="Citas"
+                       asp-action="Index"
+                       class="btn btn-info text-white">
+                        Mis citas
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
