@@ -1,0 +1,52 @@
+@model ClinicaVeterinaria.Models.Mascota
+
+@{
+    ViewData["Title"] = "Detalles de Mascota";
+}
+
+<div class="container mt-4">
+
+    <h1>Detalles de Mascota</h1>
+
+    <hr />
+
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            Nombre
+        </dt>
+
+        <dd class="col-sm-9">
+            @Model.Nombre
+        </dd>
+
+        <dt class="col-sm-3">
+            Especie
+        </dt>
+
+        <dd class="col-sm-9">
+            @Model.Especie
+        </dd>
+
+        <dt class="col-sm-3">
+            Raza
+        </dt>
+
+        <dd class="col-sm-9">
+            @Model.Raza
+        </dd>
+
+    </dl>
+
+    <a asp-action="Edit"
+       asp-route-id="@Model.Id"
+       class="btn btn-warning">
+        Editar
+    </a>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Volver
+    </a>
+
+</div>

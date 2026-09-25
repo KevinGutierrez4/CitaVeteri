@@ -1,0 +1,65 @@
+﻿@model ClinicaVeterinaria.Models.ServicioVeterinario
+
+@{
+    ViewData["Title"] = "Detalles del Servicio";
+}
+
+<div class="container mt-4">
+
+    <h1>Detalles del Servicio</h1>
+
+    <hr />
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h3>@Model.Nombre</h3>
+
+            <hr />
+
+            <dl class="row">
+
+                <dt class="col-sm-3">
+                    Nombre
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.Nombre
+                </dd>
+
+                <dt class="col-sm-3">
+                    Descripción
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.Descripcion
+                </dd>
+
+                <dt class="col-sm-3">
+                    Precio
+                </dt>
+
+                <dd class="col-sm-9">
+                    Bs. @Model.Precio.ToString("0.00")
+                </dd>
+
+            </dl>
+
+            @if (User.IsInRole("Administrador"))
+            {
+                <a asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-warning">
+                    Editar
+                </a>
+            }
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Volver
+            </a>
+
+        </div>
+    </div>
+
+</div>

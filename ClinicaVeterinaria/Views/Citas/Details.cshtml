@@ -1,0 +1,117 @@
+﻿@model ClinicaVeterinaria.Models.Cita
+
+@{
+    ViewData["Title"] = "Detalles de la Cita";
+}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header bg-info text-white">
+
+                    <h4 class="mb-0">
+                        Detalles de la Cita
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <dl class="row">
+
+                        <dt class="col-sm-4">
+                            Mascota
+                        </dt>
+
+                        <dd class="col-sm-8">
+                            @Model.Mascota?.Nombre
+                        </dd>
+
+
+                        <dt class="col-sm-4">
+                            Servicio
+                        </dt>
+
+                        <dd class="col-sm-8">
+                            @Model.ServicioVeterinario?.Nombre
+                        </dd>
+
+
+                        <dt class="col-sm-4">
+                            Fecha
+                        </dt>
+
+                        <dd class="col-sm-8">
+                            @Model.FechaCita.ToString("dd/MM/yyyy HH:mm")
+                        </dd>
+
+
+                        <dt class="col-sm-4">
+                            Estado
+                        </dt>
+
+                        <dd class="col-sm-8">
+
+                            @if (Model.Estado == "Pendiente")
+                            {
+                                <span class="badge bg-warning text-dark">
+                                    Pendiente
+                                </span>
+                            }
+                            else if (Model.Estado == "Atendida")
+                            {
+                                <span class="badge bg-success">
+                                    Atendida
+                                </span>
+                            }
+                            else if (Model.Estado == "Cancelada")
+                            {
+                                <span class="badge bg-danger">
+                                    Cancelada
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">
+                                    @Model.Estado
+                                </span>
+                            }
+
+                        </dd>
+
+                    </dl>
+
+                    <hr />
+
+                    <div class="d-flex gap-2">
+
+                        <a asp-action="Index"
+                           class="btn btn-secondary">
+                            Volver
+                        </a>
+
+                        @if (Model.Estado == "Pendiente")
+                        {
+                            <a asp-action="Delete"
+                               asp-route-id="@Model.Id"
+                               class="btn btn-danger">
+                                Cancelar Cita
+                            </a>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
